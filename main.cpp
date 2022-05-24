@@ -1,78 +1,79 @@
-//
-// Created by Sun Haoxian on 23/5/22.
-//
-#include "Node.h"
+#include <iostream>
 #include "LinkedList.h"
-#include<vector>
-#include<string>
-#include<iostream>
+#include <string>
+#include <cstring>
+#include <cstdlib>
+using namespace std;
 
-enum class InputIndexEnun {
-    denotation = 4,
-    firstArgument = 5,
-    secondArgument = 6
-};
+int main(){
 
-int main(int argc, char **argv){
+    int array[100]={0};
+    
+    string input;
+    int size=0;
+    int num1, num2;
 
-    shared_ptr<LinkedList> linkedList;
+    while(cin>>input){
+        if(isdigit(input[0])){
+            //convert the string to int and store into 
+            array[size]=atoi(input.c_str());
 
-    vector<string> input;
-
-    string input_value;
-
-    for(int i = 0; i <7; ++i){
-        try{
-            cin>>input_value;
-            input.push_back(input_value.substr(0,input_value.find(' ')));
-        }catch(exception& e){
-            cout <<e.what() <<endl;
+            //increment the size of array
+            size++;
+        }
+        else if(cin.get()=='\n'){
+            break;
+        }
+        else{
+            //if is not integer, exit
+            break;
         }
     }
 
-    vector<int> constructionArray;
-    for_each(input.begin(),input.begin()+4,[&constructionArray](const string& var){
-        constructionArray.push_back(stoi(var));
-    });
 
-
-
-
- int denoatationIndex = static_cast<unsigned long>(InputIndexEnun::denotation);
- int firstArgumentIndex = static_cast<unsigned long>(InputIndexEnun::firstArgument);
- int secondArgumentIndex = static_cast<unsigned long>(InputIndexEnun::secondArgument);
-
- if (input.at(denoatationIndex)=="AF"){
-     linkedList->addFront(stoi(input.at(firstArgumentIndex)));
- }
-    if (input.at(denoatationIndex)=="AE"){
-        linkedList->addEnd(stoi(input.at(firstArgumentIndex)));
+    //pass the array and size of array into the linkedlist constructor
+    LinkedList linklist(array,size);
+    //cout<<"Print 5"<<endl;
+    //linklist.printItems();
+    if(input=="AF"){
+        cin>>num1;
+        linklist.addFront(num1);
     }
-
-    if (input.at(denoatationIndex)=="Ap"){
-        linkedList->addAtPosition(stoi(input.at(firstArgumentIndex)), stoi(input.at(secondArgumentIndex)));
+    else if(input=="AE"){
+        cin>>num1;
+        linklist.addEnd(num1);
+    
+    }
+    else if(input== "AP"){
+        cin>>num1>>num2;
+        linklist.addAtPosition(num1,num2);
 
     }
-    if (input.at(denoatationIndex)=="S"){
-        linkedList->search(stoi(input.at(firstArgumentIndex)));
-
+    else if(input == "S"){
+        cin>>num1;
+        linklist.search(num1);
+    }
+    else if(input == "DF"){
+        linklist.deleteFront();
+    }
+    else if(input=="DE"){
+        linklist.deleteEnd();
+    }
+    else if(input == "DP"){
+        cin>>num1;
+        linklist.deletePosition(num1);
+    }
+    else if(input == "GI"){
+        cin>>num1;
+        linklist.getItem(num1);
+    }
+    else{
+        return -1;
     }
 
-    if (input.at(denoatationIndex)=="DF") {
-        linkedList->deleteFront();
-    }
-
-        if (input.at(denoatationIndex)=="DE"){
-            linkedList->deleteEnd();
-        }
-
-        if (input.at(denoatationIndex)=="DP"){
-                linkedList->deletePosition(stoi(input.at(firstArgumentIndex)));
-            }
-
-            if (input.at(denoatationIndex)=="GI"){
-                    linkedList->getItem(stoi(input.at(firstArgumentIndex)));
-            }
-            linkedList->printItems();
-
+    linklist.printItems();
+    //delete linklist;
+    return 0;
 }
+
+//5 2 7 10 AF 3 0

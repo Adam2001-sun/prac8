@@ -1,221 +1,303 @@
-//
-// Created by Sun Haoxian on 23/5/22.
-//
-
+#include <iostream>
 #include "LinkedList.h"
-#include <string>
+#include <limits.h>
+using namespace std;
 
-LinkedList::LinkedList() = default;
+LinkedList::LinkedList(int arr[], int size){
 
-LinkedList::~LinkedList() {
-if (this->head == nullptr){
-    return;
-}
-auto temp = this->head;
-while (temp->right != nullptr){
-    temp =temp->right;
-    this->deleteFront();
- }
-}
+    head = new Node();
 
-LinkedList::LinkedList(const vector<int> &input) {
-    for_each(input.begin(),input.end(),[&](int item){
-        this->addFront(item);
-    });
-}
+    Node* temp=head;
 
+    temp->setData(arr[0]);
+    temp->setNext(nullptr);
 
+    for(int i=1; i<size;i++){
+        Node* newNode=new Node();
+        newNode->setData(arr[i]);
+        //if at last element
+        newNode->setNext(nullptr);
 
-void LinkedList::addFront(int newItem) {
-        if (this->head == nullptr) {
-            this->head = create_node(newItem);
-            this->rear = this->head;
-        } else {
-            auto newNode = create_node(newItem);
-
-            newNode->right = this->head;
-
-            this->head->left = newNode;
-
-            this->head = newNode;
-        }
+        temp->setNext(newNode);
+        temp=newNode;
     }
 
+}
 
-    void LinkedList::printItems(){
-    if(this->head == nullptr){
+LinkedList::LinkedList(){
+    head=nullptr;
+}
+LinkedList::~LinkedList(){
+
+    if(head==nullptr){
         return;
     }
-    auto temp =this->head;
-    cout << temp->data << " ";
-    while (temp->right != nullptr){
-        temp =temp->right;
-        cout << temp->data <<" ";
+    Node* temp = head;
+    Node* next = head;
+    //clean
+    while(temp!=nullptr){
+
+        next = temp->getNext();
+
+        delete temp;
+
+        temp = next;
     }
 }
+// newHead_next_ptr==newNode_next_ptr then SET   newHead->setNext(newNode)
+void LinkedList::add(int item,Node* newNode_next_ptr,Node* newHead, Node* newHead_next_ptr,bool newHead_next_as_newNode){
 
-    shared_ptr<Node> LinkedList::create_node(int data) {
-        return make_shared<Node>(data);
+
+    Node *newNode = new Node();
+    newNode->setData(item);
+    newNode->setNext(newNode_next_ptr);
+    if (newHead_next_as_newNode){
+        newHead->setNext(newNode);
+    } else{
+        newHead->setNext(newHead_next_ptr);/*
+        if (newHead_next_ptr== nullptr)
+        {
+
+            //newHead->setNext(newNode);
+        } else{
+            newHead->setNext(newHead_next_ptr);
+        }*/
     }
 
 
-void LinkedList::addEnd(int newItem) {
-    if (this->head == nullptr) {
-        this->head = create_node(newItem);
-        this->rear = this->head;
+
+
+
+}
+void LinkedList::addFront(int newItem){
+
+    add(newItem,head, head, nullptr, true);
+/*    Node* newNode = new Node();
+    newNode->setData(newItem);
+    //newnode(node1) (node2)head
+    newNode->setNext(head);
+    head=newNode;
+    //head(node1) node2*/
+
+
+}
+
+void LinkedList::addEnd(int newItem){
+
+
+    //First item
+    if (head == nullptr)
+    {
+
+        add(newItem, nullptr, head, nullptr);
+        /*head=new Node();
+        head->setData(newItem);*/
+    }
+    Node* currentNode=head;
+
+/*
+    Node* newNode=new Node();
+
+    newNode->setData(newItem);
+
+    //leave to nullptr for the next element of newNode
+    newNode->setNext(nullptr);
+*/
+
+
+    //loop to the end of list
+
+    while(currentNode->getNext() != nullptr){
+        //move next
+        currentNode=currentNode->getNext();
+    }
+
+    //currentNode:last element, append element
+    //currentNode->setNext(newNode);
+    add(newItem, nullptr, currentNode, nullptr, true);
+}
+
+void LinkedList::addAtPosition(int position, int newItem) {
+    if (position < 1) {
+        addFront(newItem);
     } else {
-        auto newNode = create_node(newItem);
+        Node *temp = head;
+        //counting will start from first element
+              int i = 1;
+              //loop until the position-th
+              while(temp->getNext()!=nullptr && i<position-1){
+                  //cout<<"current data is = "<<temp->getData()<<endl;
+                  temp=temp->getNext();
+                  i++;
+              }
 
-        newNode->left = this->rear;
 
-        this->rear->right = newNode;
 
-        this->rear= newNode;
-    }
-}
-
-void LinkedList::addAtPosition(int position, int newItem){
-
-    auto positionNode = getItemByposition(position);
-
-    if(positionNode == this->head){
-        this->addFront(newItem);
-        return;
-    }
-    if(positionNode == this->rear){
-        this->addEnd(newItem);
-        return;
-    }
-
-    auto newNode = create_node(newItem);
-    newNode ->left = positionNode->left;
-    newNode->right =positionNode;
-    positionNode->left->right = newNode;
-    positionNode->left = newNode;
-
-}
-
-shared_ptr<Node> LinkedList::getItemByposition(int position){
-
-    if (position < 1 ){
-        return this->head;
-    }
-
-    if (position > size){
-        return this->rear;
-    }
-        if(position>=size/2){
-            return leftTraversal(this->rear, size, position);
-        }else{
-            return rightTraversal(this->head,1,position);
+        //call addEnd function
+        if (temp->getNext() == nullptr) {
+            addEnd(newItem);
         }
-}
+            //reach middle
+        else {
 
-shared_ptr<Node> LinkedList::leftTraversal(shared_ptr<Node> &node, int from, int to){
+            /* Node* newNode= new Node();
+             newNode->setData(newItem);
+             newNode->setNext(temp->getNext());
+             temp->setNext(newNode);*/
+            add(newItem, temp->getNext(), temp, nullptr, true);
+        }
 
-    if(from == to){
-        return node;
     }
-    return leftTraversal(node->left ,from-1,to);
+
+
 }
-
-shared_ptr<Node> LinkedList::rightTraversal(shared_ptr<Node> &node, int from, int to){
-
-    if(from == to){
-        return node;
-    }
-    return rightTraversal(node->right ,from+1,to);
-}
-
-
-
 int LinkedList::search(int item){
-if(item == this->head->data){
-    return 1;
-}
-if(item == this->rear->data){
-    return size;
-}
-int position = 1;
-return searchHelper(this->head,item,position);
+    //start from the first element of the list
+    int position=1;
+    Node* temp = head;
 
+    //loop until the whole list has been searched
+    while(temp!=nullptr){
+        //if  found
+        if(temp->getData()==item){
+
+            return position;
+        }
+        //increment  position
+        position++;
+        //goto next node
+        temp=temp->getNext();
+    }
+    //after searched the whole list
+    //if item not found
+    //cout<<"0"<<" ";
+    return 0;
+
+}
+void LinkedList::deleteFront(){
+    
+    if(head == nullptr){
+        return;
+    }
+    else{
+        
+        //store the first node
+        Node* temp=head;
+        //move the head pointer from first node to the second node
+        head=head->getNext();
+        
+        //delete the first node
+        delete temp;
+    }
 }
 
 void LinkedList::deleteEnd(){
-    if(this->rear == nullptr){
-        cerr <<"ERROR list is empty"<<endl;
+    
+    if(head==nullptr){
         return;
-    }else{
-        auto secondNode = leftTraversal(this->rear, size, size-1);
-        secondNode->right = nullptr;
-        this ->rear =secondNode;
     }
-    decreaseSize();
+    else{
 
+
+        Node* secondLastNode=head;
+        Node* lastNode=head;
+        //get last and second last node
+        while(lastNode->getNext() != nullptr){
+            secondLastNode=lastNode;
+
+            lastNode=lastNode->getNext();
+        }
+
+        delete lastNode;
+        //set the pointer of second last node to NULL
+        secondLastNode->setNext(nullptr);
+    }
+    
 }
 
-int LinkedList::searchHelper(shared_ptr<Node>&node, int item, int position){
-    if(head == nullptr){
-        if  (position == 1){
-            cerr << "ERROR empty list"<<endl;
-            return -1;
-        }else{
-            return  -1;
+void LinkedList::deletePosition(int position){
+    
+    if(head!=nullptr){
+
+        if(position<1){
+            cout<<"out of range"<<endl;
+        }
+
+        Node* secondLastNode=head;
+        Node* lastNode=head;
+
+
+        int count = 0;
+        int i =1;
+        //cout<<position<<endl;
+        //loop util given position
+        while(secondLastNode!=nullptr && i<position){
+            count++;
+
+            //store the previous address
+            lastNode=secondLastNode;
+            //get the next address
+            secondLastNode=secondLastNode->getNext();
+
+
+            //increase the counter
+            i++;
+
+
+        }
+        //if to delete the first node
+        if(position==1){
+            deleteFront();
+        }
+
+        else if(secondLastNode!=nullptr){
+            lastNode->setNext(secondLastNode->getNext());
+
+            delete secondLastNode;
+        }
+        else{
+
+
         }
     }
 
-    if(head->data == item){
-        return searchHelper(node->right,item,position+1);
-    }
-}
-
-void LinkedList::decreaseSize(){
-    size--;
-}
-
-
-void LinkedList::deleteFront() {
-
-    if(this->head == nullptr){
-        cerr << "ERROR empty list"<<endl;
-        return;
-    }else {
-        auto secondNode = rightTraversal(this->head, 1, 2);
-        secondNode->left = nullptr;
-        this->head = secondNode;
-
-    }
-   decreaseSize();
-}
-
-
-
-void LinkedList::deletePosition(int position) {
-
-auto positionNode = getItemByposition(position);
-
-
-if(positionNode == this->head){
-    this ->deleteFront();
-    return;
-}
-
-if(positionNode == this->rear){
-        this ->deleteEnd();
-        return;
-}
-
-auto leftNode = positionNode->left;
-auto rightNode = positionNode->right;
-leftNode->right = rightNode;
-rightNode->left = leftNode;
-    decreaseSize();
 }
 
 int LinkedList::getItem(int position){
-    return getItemByposition(position)->data;
+
+    if(head!=nullptr){
+        int i =1;
+        Node* temp=head;
+        while(temp!=nullptr&&i<position){
+            temp=temp->getNext();
+            i++;
+        }
+
+        //beyond the size of array
+
+        if(temp==nullptr){
+            cout<<numeric_limits<int>::max()<<" ";
+            return numeric_limits<int>::max();
+        }
+        else{
+            
+            cout<<temp->getData()<<" ";
+            return temp->getData();
+        }
+    }
 }
 
+void LinkedList::printItems(){
+    if(head!=nullptr){
+        Node* current=head;
+        //boundary case
+        while(current->getNext() != nullptr){
+            cout << current->getData() << " ";
+            current=current->getNext();
+        }
+        cout << current->getData() << " ";
+        cout<<endl;
+    }  
 
-
+}
 

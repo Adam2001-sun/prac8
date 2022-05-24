@@ -1,11 +1,24 @@
-//
-// Created by Sun Haoxian on 22/5/22.
-//
-
+#include <iostream>
 #include "Node.h"
 
-Node::Node (int data){
-    this -> data = data;
-    this -> left = this->right = nullptr;
+Node::Node(){
+    //init
+    data =0;
+    next = nullptr;
+}
+
+
+void Node::setNext(Node* next_ptr){
+    next = next_ptr;
+}
+void Node::setData(int data){
+    this->data=data;
+}
+Node* Node::getNext(){
+    return next;
+}
+
+int Node::getData(){
+    return data;
 }
 

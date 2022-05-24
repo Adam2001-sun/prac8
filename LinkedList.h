@@ -1,61 +1,28 @@
-//
-// Created by Sun Haoxian on 23/5/22.
-//
-
-#ifndef CMAKE_CLION_CONAN_TEMPLATE_LINKEDLIST_H
-#define CMAKE_CLION_CONAN_TEMPLATE_LINKEDLIST_H
-
+#ifndef LINKEDLIST_H
+#define LINKEDLIST_H
 #include "Node.h"
-#include <iostream>
-#include <string>
-
-class LinkedList {
-
+#include <limits>
+#include <array>
+class LinkedList{
 public:
-
     LinkedList();
-
-    LinkedList(const vector<int> &input);
-
-
-
+    LinkedList(int arr[],int size);
     void addFront(int newItem);
-
     void addEnd(int newItem);
-
-    void addAtPosition(int position, int newItem);
-
+    void addAtPosition(int position,int newItem);
     int search(int item);
-
     void deleteFront();
-
     void deleteEnd();
-
     void deletePosition(int position);
-
     int getItem(int position);
 
     void printItems();
 
-    virtual ~LinkedList();
-
-    void increaseSize();
-    void decreaseSize();
-
+    ~LinkedList();
 private:
-    shared_ptr<Node> head = nullptr;
-    shared_ptr<Node> rear = nullptr;
-
-    int size = 0;
-
-    shared_ptr<Node> create_node(int data);
-
-    shared_ptr<Node> getItemByposition(int position);
-
-    shared_ptr<Node> leftTraversal(shared_ptr<Node> &node, int from, int to);
-
-    shared_ptr<Node> rightTraversal(shared_ptr<Node> &node, int from, int to);;
-
-    int searchHelper(shared_ptr<Node>&node, int item, int position);
+    void add(int item,Node* newNode_next_ptr,Node* newHead, Node* newHead_next_ptr,bool newHead_next_as_newNode= false);
+    
+    Node* head= nullptr;
 };
-#endif //CMAKE_CLION_CONAN_TEMPLATE_LINKEDLIST_H
+
+#endif //END OF LINKEDLIST

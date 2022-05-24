@@ -1,24 +1,17 @@
-//
-// Created by Sun Haoxian on 22/5/22.
-//
+#ifndef NODE_H
+#define NODE_H
 
-#ifndef CMAKE_CLION_CONAN_TEMPLATE_NODE_H
-#define CMAKE_CLION_CONAN_TEMPLATE_NODE_H
-
-
-#include<vector>
-
-using namespace std;
-
-class Node {
-
-public:
-    int data;
-    shared_ptr<Node> left;
-    shared_ptr<Node> right;
-
-    explicit Node (int data);
+class Node{
+    public:
+        Node();
+        int getData();
+        void setData(int data);
+        Node* getNext();
+        void setNext(Node* next_ptr);
+    
+    private:
+        int data;
+        Node* next;
 };
 
-
-#endif //CMAKE_CLION_CONAN_TEMPLATE_NODE_H
+#endif
